@@ -5,20 +5,7 @@ import pickle
 import time
 from sklearn import preprocessing, linear_model, model_selection
 import matplotlib.pyplot as plt
-'''
-Note the following from 
-https://www.census.gov/programs-surveys/ahs/data/interactive/docs/2013%20v%202015%20Metro%20Areas.pdf
 
-New York:
-
-2015 AHS data are not comparable to 2013 AHS data because 2015 includes Essex County, NJ,
-Hunterdon County, NJ, Morris County, NJ, Somerset County, NJ, Sussex County, NJ, Union County, NJ,
-Bergen County, NJ, Hudson County, NJ, Middlesex County, NJ, Monmouth County, NJ, Ocean County, NJ,
-Passaic County, NJ, Dutchess County, NY, and Pike County, PA, which were not included in 2013.
-
-So the data set that I have includes Hudson County NJ as well as other nearby NJ areas (including a PA address?) 
-
-'''
 def clean(fname):
     # read the data out of csvs
     data = pd.read_csv(fname)
@@ -104,8 +91,7 @@ def trend(X, y):
     plt.close()
 
 def regress(X, y):
-    model = linear_model.BayesianRidge(normalize=True)+
-
+    model = linear_model.BayesianRidge(normalize=True)
     model.fit(X, y)
     return model
 
@@ -118,10 +104,10 @@ def main():
     X, y = clean('./household.csv')
     #print("Creating trends")
     #trend(X, y)
-    best_score = -99999
+    best_score = 99999
     for degree in range(7):
         X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.3)
-        print("Adding polynomial features")
+        print("Adding polynomial features of degree "+ str(degree))
         X_train = add_poly(X_train, deg=degree)
         print("Training model")
         start = time.time()
@@ -130,10 +116,10 @@ def main():
         print("Total training time in seconds: ", str(end - start))
         X_test = add_poly(X_test, deg=degree)
         score = model.score(X_test, y_test)
-        print("Score = " + str(score))
+        print("Score: " + str(score))
         print("For values: " + str(X_test[0, :]) + " the model predicts " + str(model.predict(X_test[0, :])) + " when the actual value is " + str(y_test.iloc[0]))
-        if score > best_score:
-            best_score = score
+        if np.abs(1 - score) < best_score:
+            best_score = np.abs(1 - score)
             best_model = model
             best_degree = degree
         print("====================================================")
