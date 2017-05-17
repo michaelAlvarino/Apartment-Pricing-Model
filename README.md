@@ -22,5 +22,6 @@ This model succeeded pretty well in spite of only using ~600 of the ~2000 New Yo
 2. Should I try higher degree polynomials?
 3. Would a model other than Bayesian Ridge work better? Why?
 4. Is it worth normalizing the data in this case? When would one NOT normalize the data?
+5. The distribution of y values looks like a mix of several gaussians. I wonder if an Expectation Maximization model would be able to categorize apartments based on price, and what those apartments features would have in common?
 
 Please contact me if you think there's something I could improve or am misunderstanding. Specifically I am worried I am misunderstanding the score value returned by the model on testing data. Sklearn documentation says R^2 is defined as (1 - u/v), but also says that the best possible score is 1.0. I am measuring distance from 1.0, but worry that this is already being done in the 'definition' of the score.
