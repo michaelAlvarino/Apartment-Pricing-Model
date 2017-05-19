@@ -14,7 +14,7 @@ def clean(fname):
     # this all takes one value... just remove it
     del NY['OMB13CBSA']
     print("Found " + str(NY.shape[0]) + " NY entries")
-    X = NY.loc[:, ['BEDROOMS', 'DINING', 'FINROOMS', 'KITCHSINK', 'COOKTYPE', 'STORIES',
+    X = NY.loc[:, ['BEDROOMS', 'DINING', 'FINROOMS', 'KITCHSINK', 'STORIES',
     'UTILAMT', 'ELECAMT', 'GASAMT', 'WATERAMT']]
     Y = NY.loc[:, 'RENT']
     X.loc[:, 'BATHROOMS'] = NY.loc[:, 'BATHROOMS'].map(lambda x: int(x[1:-1]))
@@ -51,27 +51,27 @@ def get_descriptions():
     desc = {
         "BEDROOMS": "Number of bedrooms 0 - 10",
         "BATHROOMS": "1 bathroom - '01', 1.5 bathroom - '02', 2 bathroom - '03' ... etc",
-        "UNITSIZE": "Square footage of unit",
-        "PORCH": "Porch, deck, balcony or patio",
-        "FIREPLACE": "Usable fireplace",
-        "DINING": "Separate dining room",
-        "FINROOMS": "With 2 or more living rooms or recreation rooms, etc",
-        "HEATTYPE": "Main Heating Equipment",
-        "ACPRIMARY": "Primary Air Conditioning",
-        "FRIDGE": "Refrigerator",
-        "KITCHSINK": "Kitchen sink",
-        "COOKTYPE": "Cooking stove or range",
-        "DISHWASH": "Dishwasher",
-        "WASHER": "Clothes washing machine",
-        "DRYER": "Clothes dryer",
-        "BLD": "Number of units in structure",
-        "STORIES": "Stories in structure",
-        "UTILAMT": "Amount paid towards utilities",
-        "INSURAMT": "Amount paid towards renters or homeowners insurance",
-        "ELECAMT": "Amount paid towards electricity",
-        "GASAMT": "Amount paid towards gas",
-        "WATERAMT": "Amount paid towards water",
-        "HOTWATER": "Water heating fuel"
+        "UNITSIZE": "Square footage of unit, 1 - inf",
+        "PORCH": "Porch, deck, balcony or patio, 0/1",
+        "FIREPLACE": "Usable fireplace 0, 1, 2, 3",
+        "DINING": "Separate dining room, 0, 1, 2, 3, 4, 5",
+        "FINROOMS": "With 2 or more living rooms or recreation rooms, etc, >= 2",
+        "HEATTYPE": "Main Heating Equipment 1 - 13",
+        "ACPRIMARY": "Primary Air Conditioning 1 - 12",
+        "FRIDGE": "Refrigerator 0/1",
+        "KITCHSINK": "Kitchen sink 0/1",
+        "COOKTYPE": "Cooking stove or range 0, 1, 2, 3",
+        "DISHWASH": "Dishwasher 0/1",
+        "WASHER": "Clothes washing machine 0/1",
+        "DRYER": "Clothes dryer 0, 1, 2, 3, 4",
+        "BLD": "Number of units in structure 0 - 10",
+        "STORIES": "Stories in structure 1 - 21",
+        "UTILAMT": "Amount paid towards utilities 0 - inf",
+        "INSURAMT": "Amount paid towards renters or homeowners insurance 0 - inf",
+        "ELECAMT": "Amount paid towards electricity 0 - inf",
+        "GASAMT": "Amount paid towards gas 0 - inf",
+        "WATERAMT": "Amount paid towards water 0 - inf",
+        "HOTWATER": "Water heating fuel 1 - 7"
     }
     return desc
 
@@ -102,6 +102,7 @@ def add_poly(X, deg=6):
 def main():
     # y values cap out at 10600??
     X, y = clean('./household.csv')
+    print(X.columns.values)
     #print("Creating trends")
     #trend(X, y)
     best_score = 99999
@@ -123,8 +124,9 @@ def main():
             best_model = model
             best_degree = degree
         print("====================================================")
+    model_obj = {"model": best_model, "degree": best_degree}
     with open("./output/model.pkl", "wb") as model_file:
-        pickle.dump(best_model, model_file)
+        pickle.dump(model_obj, model_file)
     print("Best model score: " + str(best_score))
     print("Best model degree: " + str(best_degree))
 
