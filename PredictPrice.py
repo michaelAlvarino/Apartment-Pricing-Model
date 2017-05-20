@@ -2,11 +2,11 @@ import pickle
 from sklearn import preprocessing
 import numpy as np
 
-def predict(MODEL=None, BEDROOMS=1, BATHROOMS=1, UNITSIZE=1, PORCH=0,
-            FIREPLACE=0, DINING=0, FINROOMS=0, HEATTYPE=1,
+def predict(MODEL=None, BEDROOMS=1, BATHROOMS=1, UNITSIZE=3, PORCH=1,
+            FIREPLACE=1, DINING=0, FINROOMS=1, HEATTYPE=1,
             ACPRIMARY=1, FRIDGE=1, KITCHSINK=1, COOKTYPE=1,
-            DISHWASH=0, WASHER=0, DRYER=0, BLD=2, STORIES=2,
-            UTILAMT=200, ELECAMT=60, GASAMT=40, WATERAMT=40,
+            DISHWASH=0, WASHER=0, DRYER=0, BLD=8, STORIES=4,
+            UTILAMT=64, ELECAMT=60, GASAMT=4, WATERAMT=4,
             HOTWATER=1):
     model = MODEL
     if model == None:

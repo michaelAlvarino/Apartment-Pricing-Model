@@ -99,16 +99,11 @@ def add_poly(X, deg=6):
     poly = preprocessing.PolynomialFeatures(deg)
     return poly.fit_transform(X)
 
-def main():
-    # y values cap out at 10600??
-    X, y = clean('./household.csv')
-    print(X.columns.values)
-    #print("Creating trends")
-    #trend(X, y)
+def train(X, y, max_degree = 7):
     best_score = 99999
     for degree in range(7):
         X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size=0.3)
-        print("Adding polynomial features of degree "+ str(degree))
+        print("Adding polynomial features of degree " + str(degree))
         X_train = add_poly(X_train, deg=degree)
         print("Training model")
         start = time.time()
@@ -118,19 +113,34 @@ def main():
         X_test = add_poly(X_test, deg=degree)
         score = model.score(X_test, y_test)
         print("Score: " + str(score))
-        print("For values: " + str(X_test[0, :]) + " the model predicts " + str(model.predict(X_test[0, :])) + " when the actual value is " + str(y_test.iloc[0]))
+        print("For values: " + str(X_test[0, :]) + " the model predicts " + str(
+            model.predict(X_test[0, :])) + " when the actual value is " + str(y_test.iloc[0]))
         if np.abs(1 - score) < best_score:
             best_score = np.abs(1 - score)
             best_model = model
             best_degree = degree
         print("====================================================")
+    print("Best model score: " + str(best_score))
+    return [best_model, best_degree]
+
+def analyze(X, y):
+    covs = {}
+    for col in X:
+        covs[col] = np.cov([X[col], y])[0][1]
+    print(covs)
+
+def main():
+    # y values cap out at 10600??
+    X, y = clean('./household.csv')
+    print(X.columns.values)
+    #print("Creating trends")
+    #trend(X, y)
+    #analyze(X, y)
+    best_model, best_degree = train(X, y, 7)
     model_obj = {"model": best_model, "degree": best_degree}
     with open("./output/model.pkl", "wb") as model_file:
         pickle.dump(model_obj, model_file)
-    print("Best model score: " + str(best_score))
     print("Best model degree: " + str(best_degree))
-
-
 
 if __name__ == "__main__":
     # print all the colunms and rows when i ask for them! For debugging...
